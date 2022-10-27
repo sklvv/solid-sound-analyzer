@@ -1,11 +1,10 @@
 import { type Component, createMemo, For } from "solid-js";
-import { arc, interpolateSinebow, interpolateInferno } from "d3";
-
-import { startFromFile, rawData } from "./audioSource";
+import { arc } from "d3";
+import { rawData } from "@/shared/utils/audioSource";
 
 const arcBuilder = arc();
 
-const RadialGraph: Component<{
+export const RadialGraph: Component<{
   color: (value: number) => string;
   scale: number;
 }> = ({ color, scale }) => {
@@ -44,6 +43,7 @@ const RadialGraph: Component<{
 
     return { paths, intensity };
   });
+  console.log("render");
   return (
     <g transform={`scale(${computed().intensity * scale + 1})`}>
       <For each={computed().paths}>
@@ -52,21 +52,3 @@ const RadialGraph: Component<{
     </g>
   );
 };
-
-const App: Component = () => {
-  return (
-    <div onClick={startFromFile} style="width: 100vw; height: 100vh;">
-      <svg
-        width="100%"
-        height="100%"
-        viewBox="-100 -100 200 200"
-        preserveAspectRatio="xMidYMid meet"
-      >
-        <RadialGraph color={interpolateSinebow} scale={2.5} />
-        <RadialGraph color={interpolateInferno} scale={1.5} />
-      </svg>
-    </div>
-  );
-};
-
-export default App;

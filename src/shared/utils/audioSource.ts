@@ -2,8 +2,8 @@ import { createSignal } from "solid-js";
 
 const [rawData, setRawData] = createSignal<number[]>([]);
 
-export const startFromFile = async () => {
-  const res = await fetch("/EpicTrailer.mp3");
+export const startFromFile = async (isPlaying: () => boolean) => {
+  const res = await fetch("/morg.mp3");
   const byteArray = await res.arrayBuffer();
 
   const context = new AudioContext();
@@ -16,17 +16,19 @@ export const startFromFile = async () => {
   analyzer.fftSize = 512;
 
   source.connect(analyzer);
-  // analyzer.connect(context.destination);
+  analyzer.connect(context.destination);
   source.start();
-
   const bufferLength = analyzer.frequencyBinCount;
   const dataArray = new Uint8Array(bufferLength);
-
   const update = () => {
     analyzer.getByteFrequencyData(dataArray);
     const orig = Array.from(dataArray);
     setRawData([[...orig].reverse(), orig].flat());
-    requestAnimationFrame(update);
+
+    isPlaying() === false && source.stop(); // stop sound
+    isPlaying() === false && setRawData([]);
+
+    isPlaying() && requestAnimationFrame(update); // update frame if player is playing
   };
   requestAnimationFrame(update);
 };
