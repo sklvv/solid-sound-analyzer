@@ -1,6 +1,6 @@
 import { type Component, createMemo, For } from "solid-js";
 import { arc } from "d3";
-import { rawData } from "@/shared/utils/audioSource";
+import { rawData } from "../model/audioSource";
 
 const arcBuilder = arc();
 
