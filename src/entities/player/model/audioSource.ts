@@ -2,8 +2,13 @@ import { createSignal } from "solid-js";
 
 const [rawData, setRawData] = createSignal<number[]>([]);
 
-export const startFromFile = async (isPlaying: () => boolean) => {
-  const res = await fetch("/morg.mp3");
+export const startFromFile = async (
+  isPlaying: () => boolean,
+  track: () => string
+) => {
+  let currentTrack = track();
+
+  const res = await fetch(`/${currentTrack}.mp3`);
   const byteArray = await res.arrayBuffer();
 
   const context = new AudioContext();
@@ -24,6 +29,11 @@ export const startFromFile = async (isPlaying: () => boolean) => {
     analyzer.getByteFrequencyData(dataArray);
     const orig = Array.from(dataArray);
     setRawData([[...orig].reverse(), orig].flat());
+
+    if (currentTrack !== track()) {
+      source.stop();
+      currentTrack = track();
+    }
 
     isPlaying() === false && source.stop(); // stop sound
     isPlaying() === false && setRawData([]);

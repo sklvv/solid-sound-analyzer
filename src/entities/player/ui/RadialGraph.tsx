@@ -4,7 +4,7 @@ import { rawData } from "../model/audioSource";
 
 const arcBuilder = arc();
 
-export const RadialGraph: Component<{
+const RadialGraph: Component<{
   color: (value: number) => string;
   scale: number;
 }> = ({ color, scale }) => {
@@ -52,3 +52,4 @@ export const RadialGraph: Component<{
     </g>
   );
 };
+export default RadialGraph;
